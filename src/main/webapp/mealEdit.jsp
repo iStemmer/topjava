@@ -8,16 +8,22 @@
 </head>
 <body>
 <form method="POST" action='meals' name="frmAddUser">
-    ID : <input type="text" readonly="readonly" name="id"
-                value="<c:out value="${meal.id}" />"/> <br/>
-    Date time : <input type="text" name="dateTime"
-                       value="<c:out value="${f:formatLocalDateTime(meal.dateTime, 'dd.MM.yyyy')}" />"/> <br/>
-    Description : <input type="text" name="description"
-                         value="<c:out value="${meal.description}" />"/> <br/>
-    Calories : <input type="text" name="calories"
-                      value="<c:out value="${meal.calories}" />"/> <br/>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Дата и время</th>
+            <!--<th></th>-->
+            <th>Описание</th>
+            <th>Калории</th>
+        </tr>
+        <tr>
+            <td><input type="text" readonly="readonly" name="id" value="<c:out value="${meal.id}" />"/></td>
+            <td><input type="datetime-local"  name="dateTime" value="<c:out value="${meal.dateTime}"/>"/></td>
+            <td><input type="text" name="description" value="<c:out value="${meal.description}" />"/></td>
+            <td><input type="text" name="calories" value="<c:out value="${meal.calories}" />"/></td>
+        </tr>
+    </table>
     <input type="submit" value="Submit" />
-
 </form>
 
 </body>
