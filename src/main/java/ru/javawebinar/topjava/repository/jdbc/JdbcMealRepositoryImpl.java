@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -37,28 +38,26 @@ public class JdbcMealRepositoryImpl implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(connection -> {
-                        PreparedStatement ps = connection
-                                .prepareStatement(
-                                        "insert into  meals( description, datetime, calories, user_id) values(?,?,?,?)"
-                                );
-                        ps.setString(1, meal.getDescription());
-                        ps.setObject(2, meal.getDateTime());
-                        ps.setInt(3, meal.getCalories());
-                        ps.setInt(4, userId);
-                        return ps;
-                    },
-                    keyHolder);
-            Number newKey = keyHolder.getKey();
+            MapSqlParameterSource map = new MapSqlParameterSource()
+                    .addValue("id", meal.getId())
+                    .addValue("description", meal.getDescription())
+                    .addValue("datetime", meal.getDateTime())
+                    .addValue("calories", meal.getCalories())
+                    .addValue("userId", userId);
+            Number newKey = insertUser.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
-        }/* else if (jdbcTemplate.update(
-                "UPDATE users SET name=?, email=:email, password=:password, " +
-                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", map) == 0) {
-
-            return null;
-        }*/
-        return null;
+        } else {
+            int rowsAffected = jdbcTemplate.update(
+                    "UPDATE meals SET description=?, datetime=?, calories=? WHERE id=? and user_id=?",
+                    meal.getDescription(),
+                    meal.getDateTime(),
+                    meal.getCalories(),
+                    meal.getId(),
+                    userId
+            );
+            if (rowsAffected < 1) return null;
+        }
+        return meal;
     }
 
     @Override
