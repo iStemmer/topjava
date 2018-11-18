@@ -36,6 +36,8 @@
 
         <!--Tools-->
         <ehcache.version>3.6.1</ehcache.version>
+        <!--tomcat home-->
+        <container.home>D:\tomcat9</container.home>
     </properties>
 
     <build>
@@ -69,6 +71,7 @@
                 <configuration>
                     <container>
                         <containerId>tomcat9x</containerId>
+                        <home>${container.home}</home>
                         <systemProperties>
                             <file.encoding>UTF-8</file.encoding>
                             <spring.profiles.active>tomcat,datajpa</spring.profiles.active>
