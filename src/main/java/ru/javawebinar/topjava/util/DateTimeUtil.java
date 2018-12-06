@@ -25,6 +25,10 @@ public class DateTimeUtil {
         return StringUtils.isEmpty(str) ? null : LocalDate.parse(str);
     }
 
+    public static LocalDateTime parseLocalDateTime(String str) {
+        return StringUtils.isEmpty(str) ? null : LocalDateTime.parse(str);
+    }
+
     public static LocalTime parseLocalTime(String str) {
         return StringUtils.isEmpty(str) ? null : LocalTime.parse(str);
     }
