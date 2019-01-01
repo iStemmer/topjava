@@ -66,6 +66,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @CacheEvict(value = "users", allEntries = true)
+    @Override
+    public void update(User user) {
+        Assert.notNull(user, "user must not be null");
+        checkNotFoundWithId(repository.save(prepareToSave(user, passwordEncoder)), user.getId());
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     @Override
     public void update(UserTo userTo) {
@@ -75,9 +82,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @CacheEvict(value = "users", allEntries = true)
     @Override
-    public void update(User user) {
-        Assert.notNull(user, "user must not be null");
-        checkNotFoundWithId(repository.save(prepareToSave(user, passwordEncoder)), user.getId());
+    @Transactional
+    public void enable(int id, boolean enabled) {
+        User user = get(id);
+        user.setEnabled(enabled);
+        repository.save(user);  // !! need only for JDBC implementation
     }
 
     @Override
